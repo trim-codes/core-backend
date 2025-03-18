@@ -20,7 +20,7 @@ jobs:
       - run:
           name: Deploy to Azure Server
           command: |
-            ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST << 'EOF'
+            ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST \<< EOF
               cd /var/www/trim-api
               git pull origin main
               rm -rf node_modules yarn.lock package-lock.json
