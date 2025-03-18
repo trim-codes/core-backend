@@ -44,19 +44,27 @@ jobs:
             '"   
       - run:
           name: Install PM2
-          command: npm install -g pm2
+          command: | 
+            npm install -g pm2
       - run:
-          name: Deploy to Azure Server
+          name: Clone Repository
           command: |
-            ssh -o StrictHostKeyChecking=no brampton@api.trim.codes "bash -c '
+             ssh -o StrictHostKeyChecking=no brampton@api.trim.codes "bash -c '
               cd trim/core-backend &&
               git clean -fd &&          # Remove untracked files
               git pull origin main  &&  # Pull changes safely
-              rm -rf node_modules yarn.lock package-lock.json &&
-              npm install --frozen-lockfile &&
-              npm run build &&
-              pm2 restart trim-api
-            '"
+      - run:
+          name: Install Dependencies
+          command: |
+            rm -rf node_modules yarn.lock package-lock.json &&
+            npm install --frozen-lockfile
+      - run:
+          name: Build
+          command: npm run build
+      - run:
+          name: Deploy to Azure Server
+          command: | 
+            pm2 stop 0 && pm2 start trim-api
 
 workflows:
   version: 2
