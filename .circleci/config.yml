@@ -24,14 +24,14 @@ jobs:
       - run:
           name: Deploy to Azure Server
           command: |
-            ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST << 'EOF'
-              cd /var/www/trim-api
-              git pull origin main
-              rm -rf node_modules yarn.lock package-lock.json
-              yarn install --frozen-lockfile
-              yarn build
+            ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "bash -c '
+              cd /var/www/trim-api &&
+              git pull origin main &&
+              rm -rf node_modules yarn.lock package-lock.json &&
+              yarn install --frozen-lockfile &&
+              yarn build &&
               pm2 restart trim-api
-            EOF
+            '"
 
 workflows:
   version: 2
