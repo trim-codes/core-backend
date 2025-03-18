@@ -6,6 +6,13 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Install Node.js
+          command: |
+            curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+            sudo apt-get install -y nodejs
+            node -v
+            npm -v
+      - run:
           name: Clean Existing Dependencies
           command: rm -rf node_modules yarn.lock package-lock.json
       - run:
@@ -21,6 +28,23 @@ jobs:
     steps:
       - attach_workspace:
           at: .
+      - run:
+          name: Install SSH
+          command: sudo apt-get install -y openssh-client
+      - run:
+          name: Install PM2
+          command: npm install -g pm2
+      - run:
+          name: Install Node.js on Deployment Machine (if missing)
+          command: |
+            ssh -o StrictHostKeyChecking=no brampton@api.trim.codes "bash -c '
+              if ! command -v node &> /dev/null; then
+                curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+                sudo apt-get install -y nodejs
+              fi
+              node -v
+              npm -v
+            '"
       - run:
           name: Deploy to Azure Server
           command: |
