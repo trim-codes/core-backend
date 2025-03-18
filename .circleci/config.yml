@@ -1,60 +1,43 @@
-# This config was automatically generated from your source code
-# Stacks detected: deps:node:.,package_manager:yarn:,test:jest:
 version: 2.1
-orbs:
-  node: circleci/node@5
+
 jobs:
-  test-node:
-    # Install node dependencies and run tests
-    executor: node/default
-    environment:
-      JEST_JUNIT_OUTPUT_DIR: ./test-results/
+  build:
+    machine: true  # Use a full VM instead of Docker
     steps:
       - checkout
-      - node/install-packages:
-          pkg-manager: yarn
       - run:
-          command: yarn add jest-junit --ignore-workspace-root-check
+          name: Clean Existing Dependencies
+          command: |
+            rm -rf node_modules yarn.lock package-lock.json
       - run:
-          name: Run tests
-          command: yarn run test --ci --runInBand --reporters=default --reporters=jest-junit
-      - store_test_results:
-          path: ./test-results/
-  build-node:
-    # Build node project
-    executor: node/default
-    steps:
-      - checkout
-      - node/install-packages:
-          pkg-manager: yarn
-      - run:
-          command: yarn run build
-      - run:
-          name: Create the ~/artifacts directory if it doesn't exist
-          command: mkdir -p ~/artifacts
-      # Copy output to artifacts dir
-      - run:
-          name: Copy artifacts
-          command: cp -R build dist public .output .next .docusaurus ~/artifacts 2>/dev/null || true
-      - store_artifacts:
-          path: ~/artifacts
-          destination: node-build
+          name: Install Dependencies
+          command: npm install
+
   deploy:
-    # This is an example deploy job, not actually used by the workflow
-    docker:
-      - image: cimg/base:stable
+    machine: true  # Use a full VM
     steps:
-      # Replace this with steps to deploy to users
+      - checkout
       - run:
-          name: deploy
-          command: '#e.g. ./deploy.sh'
+          name: Deploy to Azure Server
+          command: |
+            ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST << 'EOF'
+              cd /var/www/trim-api
+              git pull origin main
+              rm -rf node_modules yarn.lock package-lock.json
+              npm install
+              npm run build
+              pm2 restart trim-api
+              exit
+            EOF
+
 workflows:
-  build-and-test:
+  version: 2
+  build_and_deploy:
     jobs:
-      - test-node
-      - build-node:
+      - build
+      - deploy:
           requires:
-            - test-node
-    # - deploy:
-    #     requires:
-    #       - build-node
+            - build
+          filters:
+            branches:
+              only: main
