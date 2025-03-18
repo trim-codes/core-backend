@@ -7,27 +7,30 @@ jobs:
       - checkout
       - run:
           name: Clean Existing Dependencies
-          command: |
-            rm -rf node_modules yarn.lock package-lock.json
+          command: rm -rf node_modules yarn.lock package-lock.json
       - run:
           name: Install Dependencies
-          command: npm install
+          command: yarn install --frozen-lockfile
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
 
   deploy:
     machine: true  # Use a full VM
     steps:
-      - checkout
+      - attach_workspace:
+          at: .
       - run:
           name: Deploy to Azure Server
           command: |
-            ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST \<< EOF
+            ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST << 'EOF'
               cd /var/www/trim-api
               git pull origin main
               rm -rf node_modules yarn.lock package-lock.json
-              npm install
-              npm run build
+              yarn install --frozen-lockfile
+              yarn build
               pm2 restart trim-api
-              exit
             EOF
 
 workflows:
