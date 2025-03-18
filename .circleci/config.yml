@@ -10,7 +10,7 @@ jobs:
           command: rm -rf node_modules yarn.lock package-lock.json
       - run:
           name: Install Dependencies
-          command: yarn install --frozen-lockfile
+          command: npm install --frozen-lockfile
       - persist_to_workspace:
           root: .
           paths:
@@ -29,8 +29,8 @@ jobs:
               git clean -fd &&          # Remove untracked files
               git pull origin main  &&  # Pull changes safely
               rm -rf node_modules yarn.lock package-lock.json &&
-              yarn install --frozen-lockfile &&
-              yarn build &&
+              npm install --frozen-lockfile &&
+              npm run build &&
               pm2 restart trim-api
             '"
 
