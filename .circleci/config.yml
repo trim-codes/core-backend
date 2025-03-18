@@ -1,0 +1,43 @@
+version: 2.1
+
+jobs:
+  build:
+    machine: true  # Use a full VM instead of Docker
+    steps:
+      - checkout
+      - run:
+          name: Clean Existing Dependencies
+          command: |
+            rm -rf node_modules yarn.lock package-lock.json
+      - run:
+          name: Install Dependencies
+          command: npm install
+
+  deploy:
+    machine: true  # Use a full VM
+    steps:
+      - checkout
+      - run:
+          name: Deploy to Azure Server
+          command: |
+            ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST << 'EOF'
+              cd /var/www/trim-api
+              git pull origin main
+              rm -rf node_modules yarn.lock package-lock.json
+              npm install
+              npm run build
+              pm2 restart trim-api
+              exit
+            EOF
+
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: main
