@@ -27,7 +27,7 @@ jobs:
             ssh -o StrictHostKeyChecking=no brampton@api.trim.codes "bash -c '
               cd trim/core-backend &&
               git clean -fd &&          # Remove untracked files
-              git pull origin main --rebase &&  # Pull changes safely
+              git pull origin main  &&  # Pull changes safely
               rm -rf node_modules yarn.lock package-lock.json &&
               yarn install --frozen-lockfile &&
               yarn build &&
