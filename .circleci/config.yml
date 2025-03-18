@@ -30,7 +30,8 @@ jobs:
           at: .
       - run:
           name: Install SSH
-          command: sudo apt-get install -y openssh-client
+          command: |
+            sudo apt-get install -y openssh-client
       - run:
           name: Install PM2
           command: |
