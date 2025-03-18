@@ -5,6 +5,7 @@
   "author": "gabrielopeyemi<famosipe2010@gmail.com>",
   "private": true,
   "license": "UNLICENSED",
+  "packageManager": "yarn@1.22.21",
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -27,6 +28,7 @@
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/swagger": "^11.0.6",
     "@types/joi": "^17.2.2",
+    "class-validator": "^0.14.1",
     "joi": "^17.13.3",
     "mongoose": "^8.12.1",
     "reflect-metadata": "^0.2.2",

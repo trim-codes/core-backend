@@ -5,6 +5,7 @@ import * as Joi from 'joi';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { UrlServiceModule } from './url-service/url-service.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { AppService } from './app.service';
         uri: configService.get<string>('MONGO_URI'),
       }),
     }),
+    UrlServiceModule,
   ],
   controllers: [AppController],
   providers: [AppService],
