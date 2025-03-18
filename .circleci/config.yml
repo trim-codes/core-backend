@@ -2,7 +2,7 @@ version: 2.1
 
 jobs:
   build:
-    machine: true  # Use a full VM instead of Docker
+    machine: true
     steps:
       - checkout
       - run:
@@ -17,21 +17,14 @@ jobs:
             - .
 
   deploy:
-    machine: true  # Use a full VM
+    machine: true
     steps:
       - attach_workspace:
           at: .
       - run:
           name: Deploy to Azure Server
           command: |
-            ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "bash -c '
-              cd /var/www/trim-api &&
-              git pull origin main &&
-              rm -rf node_modules yarn.lock package-lock.json &&
-              yarn install --frozen-lockfile &&
-              yarn build &&
-              pm2 restart trim-api
-            '"
+            ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST "cd /var/www/trim-api && git pull origin main && rm -rf node_modules yarn.lock package-lock.json && yarn install --frozen-lockfile && yarn build && pm2 restart trim-api"
 
 workflows:
   version: 2
