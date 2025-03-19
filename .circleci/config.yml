@@ -50,16 +50,7 @@ jobs:
       - run:
           name: Deploy to Azure Server
           command: |
-            ssh -o StrictHostKeyChecking=no brampton@api.trim.codes "bash -c '
-              cd trim/core-backend &&
-              git clean -fd &&          # Remove untracked files
-              git pull origin main  &&  # Pull changes safely
-              rm -rf node_modules yarn.lock package-lock.json &&
-              npm install --frozen-lockfile &&
-              sudo npm install -g pm2 &&
-              npm run build &&
-              pm2 restart trim-api
-            '"
+            ssh -o StrictHostKeyChecking=no brampton@api.trim.codes "cd trim/core-backend; git clean -fd; git pull origin main; rm -rf node_modules yarn.lock package-lock.json; npm install --frozen-lockfile; npm run build; pm2 restart trim-api"
 
 workflows:
   version: 2
