@@ -57,7 +57,7 @@ jobs:
               rm -rf node_modules yarn.lock package-lock.json &&
               npm install --frozen-lockfile &&
               npm run build &&
-              pm2 restart trim-api
+              pm2 restart 0
             '"
 
 workflows:
