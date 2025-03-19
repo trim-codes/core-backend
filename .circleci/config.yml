@@ -58,7 +58,7 @@ jobs:
               npm install --frozen-lockfile &&
               npm run build &&
               pm2 restart trim-api
-            \""
+            '"
 
 workflows:
   version: 2
