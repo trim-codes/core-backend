@@ -5,7 +5,7 @@ import { IGetHello } from './types';
 export class AppService {
   getHello(): IGetHello {
     return {
-      name: 'trim-api',
+      name: 'trim-core-api',
       message: 'Hello World!',
       date: 'Sunday Mar 9, 2025',
     };
